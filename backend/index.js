@@ -6,6 +6,8 @@ const Teams = require("./models/teams.models");
 const Users = require("./models/users.models");
 initializeDatabase();
 const express = require("express");
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const cors = require("cors");
 require("dotenv").config();
 const app = express();
@@ -13,6 +15,7 @@ app.use(express.json());
 app.use(cors());
 
 const PORT = process.env.PORT;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 app.get("/tasks", async (req, res) => {
   try {
@@ -27,7 +30,7 @@ app.get("/tasks", async (req, res) => {
 
 app.post("/tasks", async (req, res) => {
   try {
-    const { name, project, team, owners, tags, timeToComplete } = req.body;
+    const { name, project, team, owners, tags, timeToComplete, status } = req.body;
     const addTasks = new Tasks({
       name,
       project,
@@ -35,6 +38,7 @@ app.post("/tasks", async (req, res) => {
       owners,
       tags,
       timeToComplete,
+      status
     });
     await addTasks.save();
     if (addTasks) {
@@ -97,8 +101,8 @@ app.get("/teams", async (req, res) => {
 
 app.post("/teams", async (req, res) => {
   try {
-    const { name, description } = req.body;
-    const addTeams = new Teams({ name, description });
+    const { name, description, members } = req.body;
+    const addTeams = new Teams({ name, description, members });
     await addTeams.save();
     if (addTeams) {
       res.status(201).json({ message: "New Team added", team: addTeams });
@@ -272,6 +276,65 @@ app.delete("/users/:id", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server error" });
+  }
+});
+
+// app.put("/:teamId/add-member-by-name", async (req, res) => {
+//   const { name } = req.body;
+//   const { teamId } = req.params;
+
+//   try {
+//     const user = await Users.findOne({ name: name.trim() });
+
+//     if (!user) {
+//       return res.status(404).json({ error: `No user found with name "${name}"` });
+//     }
+
+//     const team = await Teams.findByIdAndUpdate(
+//       teamId,
+//       { $addToSet: { members: user._id } }, // Add user ID if not already present
+//       { new: true }
+//     ).populate("members");
+
+//     res.json(user); // You can also return updated team if needed
+//   } catch (err) {
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await Users.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(400).json({ message: 'Invalid credentials' });
+
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '24h' });
+    res.json({ token, user: { name: user.name, email: user.email } });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Login failed', error: err.message });
+  }
+});
+
+app.post("/signup", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    const existinguser = await Users.findOne({ email });
+    if (existinguser) {
+      return res.status(400).json({ message: "User already exist" });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new Users({ name, email, password: hashedPassword });
+    await user.save();
+    res.status(200).json({ message: "user registered successfully" });
+  } catch (error) {
+    res.status(500).json({ message: 'Signup failed', error: err.message });
   }
 });
 

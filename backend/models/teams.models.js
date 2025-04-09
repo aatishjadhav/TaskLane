@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
-// Team Schema
+
 const teamSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true }, // Team names must be unique
-  description: { type: String }, // Optional description for the team
+  name: { type: String, required: true, unique: true }, 
+  description: { type: String }, 
+  members: [{type: mongoose.Schema.Types.ObjectId, ref: 'WorkUser' }]
 });
 
 const Teams = mongoose.model("Team", teamSchema);
