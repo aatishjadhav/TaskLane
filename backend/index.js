@@ -307,18 +307,18 @@ app.post("/login", async (req, res) => {
   try {
     const user = await Users.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid email' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid password' });
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '24h' });
     res.json({ token, user: { name: user.name, email: user.email } });
 
   } catch (error) {
-    res.status(500).json({ message: 'Login failed', error: err.message });
+    res.status(500).json({ message: 'Login failed', error});
   }
 });
 
@@ -334,7 +334,7 @@ app.post("/signup", async (req, res) => {
     await user.save();
     res.status(200).json({ message: "user registered successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Signup failed', error: err.message });
+    res.status(500).json({ message: 'Signup failed', error});
   }
 });
 
