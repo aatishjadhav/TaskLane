@@ -17,7 +17,23 @@ app.use(cors());
 const PORT = process.env.PORT;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-app.get("/tasks", async (req, res) => {
+const verifyJWtT = (req, res, next) => {
+  const token = req.headers["authorization"];
+
+  if (!token) {
+    return res.status(401).json({ message: "No token provided." });
+  }
+
+  try {
+    const decodeToken = jwt.verify(token, JWT_SECRET);
+    req.user = decodeToken;
+    next();
+  } catch (error) {
+    return res.status(402).json({ message: "Invalid token." });
+  }
+};
+
+app.get("/tasks", verifyJWtT, async (req, res) => {
   try {
     const getTaks = await Tasks.find();
     if (getTaks) {
@@ -28,7 +44,7 @@ app.get("/tasks", async (req, res) => {
   }
 });
 
-app.post("/tasks", async (req, res) => {
+app.post("/tasks", verifyJWtT, async (req, res) => {
   try {
     const { name, project, team, owners, tags, timeToComplete, status } = req.body;
     const addTasks = new Tasks({
@@ -51,7 +67,7 @@ app.post("/tasks", async (req, res) => {
   }
 });
 
-app.put("/tasks/:id", async (req, res) => {
+app.put("/tasks/:id", verifyJWtT, async (req, res) => {
   try {
     const taskId = req.params.id;
     const dataToUpdate = req.body;
@@ -70,7 +86,7 @@ app.put("/tasks/:id", async (req, res) => {
   }
 });
 
-app.delete("/tasks/:id", async (req, res) => {
+app.delete("/tasks/:id", verifyJWtT, async (req, res) => {
   try {
     const taskId = req.params.id;
     const deletedTask = await Tasks.findByIdAndDelete(taskId);
@@ -86,7 +102,7 @@ app.delete("/tasks/:id", async (req, res) => {
   }
 });
 
-app.get("/teams", async (req, res) => {
+app.get("/teams", verifyJWtT, async (req, res) => {
   try {
     const getTeams = await Teams.find();
     if (getTeams) {
@@ -99,7 +115,7 @@ app.get("/teams", async (req, res) => {
   }
 });
 
-app.post("/teams", async (req, res) => {
+app.post("/teams", verifyJWtT, async (req, res) => {
   try {
     const { name, description, members } = req.body;
     const addTeams = new Teams({ name, description, members });
@@ -112,7 +128,7 @@ app.post("/teams", async (req, res) => {
   }
 });
 
-app.put("/teams/:id", async (req, res) => {
+app.put("/teams/:id", verifyJWtT, async (req, res) => {
   try {
     const taskId = req.params.id;
     const dataToUpdate = req.body;
@@ -131,7 +147,7 @@ app.put("/teams/:id", async (req, res) => {
   }
 });
 
-app.delete("/teams/:id", async (req, res) => {
+app.delete("/teams/:id", verifyJWtT, async (req, res) => {
   try {
     const taskId = req.params.id;
     const deletedTeam = await Teams.findByIdAndDelete(taskId);
@@ -147,7 +163,7 @@ app.delete("/teams/:id", async (req, res) => {
   }
 });
 
-app.get("/project", async (req, res) => {
+app.get("/project", verifyJWtT, async (req, res) => {
   try {
     const getAllProjects = await Project.find();
     if (getAllProjects) {
@@ -160,7 +176,7 @@ app.get("/project", async (req, res) => {
   }
 });
 
-app.post("/project", async (req, res) => {
+app.post("/project", verifyJWtT, async (req, res) => {
   try {
     const { name, description } = req.body;
     const addNewProject = new Project({ name, description });
@@ -177,7 +193,7 @@ app.post("/project", async (req, res) => {
   }
 });
 
-app.put("/project/:id", async (req, res) => {
+app.put("/project/:id", verifyJWtT, async (req, res) => {
   try {
     const projectId = req.params.id;
     const dataToUpdate = req.body;
@@ -199,7 +215,7 @@ app.put("/project/:id", async (req, res) => {
   }
 });
 
-app.delete("/project/:id", async (req, res) => {
+app.delete("/project/:id", verifyJWtT, async (req, res) => {
   try {
     const projectId = req.params.id;
     const deletedProject = await Project.findByIdAndDelete(projectId);
@@ -216,7 +232,7 @@ app.delete("/project/:id", async (req, res) => {
   }
 });
 
-app.get("/users", async (req, res) => {
+app.get("/users", verifyJWtT, async (req, res) => {
   try {
     const getAllUsers = await Users.find();
     if (getAllUsers) {
@@ -229,7 +245,7 @@ app.get("/users", async (req, res) => {
   }
 });
 
-app.post("/users", async (req, res) => {
+app.post("/users", verifyJWtT, async (req, res) => {
   try {
     const { name, email } = req.body;
     const addNewUser = new Users({ name, email });
@@ -244,7 +260,7 @@ app.post("/users", async (req, res) => {
   }
 });
 
-app.put("/users/:id", async (req, res) => {
+app.put("/users/:id", verifyJWtT, async (req, res) => {
   try {
     const userId = req.params.id;
     const dataToUpdate = req.body;
@@ -263,7 +279,7 @@ app.put("/users/:id", async (req, res) => {
   }
 });
 
-app.delete("/users/:id", async (req, res) => {
+app.delete("/users/:id", verifyJWtT, async (req, res) => {
   try {
     const userId = req.params.id;
     const deletedUser = await Users.findByIdAndDelete(userId);
