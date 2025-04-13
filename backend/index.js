@@ -18,11 +18,18 @@ const PORT = process.env.PORT;
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const verifyJWtT = (req, res, next) => {
-  const token = req.headers["authorization"];
+  const authHeader = req.headers["authorization"];
 
-  if (!token) {
+  if (!authHeader) {
     return res.status(401).json({ message: "No token provided." });
   }
+
+  const token = authHeader.split(" ")[1]; // Extract token from "Bearer TOKEN"
+
+  if (!token) {
+    return res.status(401).json({ message: "Token format invalid." });
+  }
+
 
   try {
     const decodeToken = jwt.verify(token, JWT_SECRET);
@@ -35,7 +42,7 @@ const verifyJWtT = (req, res, next) => {
 
 app.get("/tasks", verifyJWtT, async (req, res) => {
   try {
-    const getTaks = await Tasks.find();
+    const getTaks = await Tasks.find().populate("owners", "name");
     if (getTaks) {
       res.status(200).json(getTaks);
     }
@@ -43,6 +50,36 @@ app.get("/tasks", verifyJWtT, async (req, res) => {
     res.status(500).json({ message: "Internal Server error" });
   }
 });
+
+// app.get("/tasks", verifyJWtT, async (req, res) => {
+//   try {
+//     const tasks = await Tasks.find()
+//       .populate("project", "name description") // include project details
+//       .populate("owners", "name") // include owner names
+//       .lean(); // lean for faster performance and to allow object manipulation
+
+//     // Grouping tasks by project on backend
+//     const groupedTasks = {};
+
+//     for (const task of tasks) {
+//       const projectId = task.project._id;
+
+//       if (!groupedTasks[projectId]) {
+//         groupedTasks[projectId] = {
+//           project: task.project,
+//           tasks: [],
+//         };
+//       }
+
+//       groupedTasks[projectId].tasks.push(task);
+//     }
+
+//     res.status(200).json(Object.values(groupedTasks));
+//   } catch (error) {
+//     console.error("Error fetching tasks:", error);
+//     res.status(500).json({ message: "Internal Server error" });
+//   }
+// });
 
 app.post("/tasks", verifyJWtT, async (req, res) => {
   try {
@@ -128,6 +165,35 @@ app.post("/teams", verifyJWtT, async (req, res) => {
   }
 });
 
+// app.post("/teams", async (req, res) => {
+//   try {
+//     const { name, description, members } = req.body;
+
+//     const memberIds = [];
+
+//     for (const memberName of members) {
+//       let user = await User.findOne({ name: memberName });
+
+//       if (!user) {
+//         user = await User.create({ name: memberName });
+//       }
+
+//       memberIds.push(user._id);
+//     }
+
+//     const newTeam = await Team.create({
+//       name,
+//       description,
+//       members: memberIds,
+//     });
+
+//     res.status(201).json(newTeam);
+//   } catch (error) {
+//     console.error("Error creating team:", error);
+//     res.status(500).json({ error: "Failed to create team" });
+//   }
+// });
+
 app.put("/teams/:id", verifyJWtT, async (req, res) => {
   try {
     const taskId = req.params.id;
@@ -163,16 +229,41 @@ app.delete("/teams/:id", verifyJWtT, async (req, res) => {
   }
 });
 
-app.get("/project", verifyJWtT, async (req, res) => {
+// app.get("/project", verifyJWtT, async (req, res) => {
+//   try {
+//     const getAllProjects = await Project.find();
+//     if (getAllProjects) {
+//       res.status(200).json(getAllProjects);
+//     } else {
+//       res.status(400).json({ message: "Failed to fetch projects" });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ message: "Internal Server error" });
+//   }
+// });
+
+app.get("/projects", verifyJWtT, async (req, res) => {
   try {
-    const getAllProjects = await Project.find();
-    if (getAllProjects) {
-      res.status(200).json(getAllProjects);
-    } else {
-      res.status(400).json({ message: "Failed to fetch projects" });
-    }
+    const projects = await Project.find().lean(); // Get all projects
+
+    const projectsWithTasks = await Promise.all(
+      projects.map(async (project) => {
+        const tasks = await Tasks.find({ project: project._id })
+          .select("name status team owners tags timeToComplete")
+          .populate("team", "name")       // populate team name if needed
+          .populate("owners", "name email"); // populate owner names and emails
+
+        return {
+          ...project,
+          tasks,
+        };
+      })
+    );
+
+    res.status(200).json(projectsWithTasks);
   } catch (error) {
-    res.status(500).json({ message: "Internal Server error" });
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -236,9 +327,9 @@ app.get("/users", verifyJWtT, async (req, res) => {
   try {
     const getAllUsers = await Users.find();
     if (getAllUsers) {
-      res.status(200).json(getAllUsers);
+     return res.status(200).json(getAllUsers);
     } else {
-      res.status(400).json({ message: "Failed to fetch users" });
+     return res.status(400).json({ message: "Failed to fetch users" });
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server error" });
@@ -331,7 +422,7 @@ app.post("/login", async (req, res) => {
       return res.status(400).json({ message: 'Invalid password' });
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '24h' });
-    res.json({ token, user: { name: user.name, email: user.email } });
+    res.json({ token });
 
   } catch (error) {
     res.status(500).json({ message: 'Login failed', error});
@@ -357,3 +448,7 @@ app.post("/signup", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+
+
+
