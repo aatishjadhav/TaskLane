@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "../components/Sidebar";
 import { useEffect, useState } from "react";
 import { addNewTeam, fetchTeams } from "../slices/teamSlice";
+import { Link } from "react-router-dom";
 
 const Team = () => {
   const dispatch = useDispatch();
@@ -127,13 +128,17 @@ const Team = () => {
           {teams?.map((proj) => (
             <div key={proj._id} className="col-md-4 mb-3">
               <div className="card p-3 bg-light border-0">
-                <h5 className="card-title">{proj.name}</h5>
+                <h5 className="card-title">
+                  <Link className="nav-link" to={`/team/${proj._id}`}>
+                    {proj.name}
+                  </Link>
+                </h5>
 
                 <div
                   className="d-flex align-items-center"
                   style={{ gap: "0.25rem" }}
                 >
-                  {proj?.members.slice(0, MAX_VISIBLE).map((member, index) => (
+                  {/* {proj?.members.slice(0, MAX_VISIBLE).map((member, index) => (
                     <div
                       key={index}
                       className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold"
@@ -157,6 +162,55 @@ const Team = () => {
                   ))}
 
                   {proj?.members.length > MAX_VISIBLE && (
+                    <div
+                      className="rounded-circle text-dark d-flex align-items-center justify-content-center fw-bold"
+                      style={{
+                        width: "32px",
+                        height: "32px",
+                        fontSize: "0.75rem",
+                        backgroundColor: "#f0d5a0",
+                        marginLeft: "-8px",
+                        border: "2px solid white",
+                        zIndex: 0,
+                      }}
+                      title={`+${proj.members.length - MAX_VISIBLE} more`}
+                    >
+                      +{proj.members.length - MAX_VISIBLE}
+                    </div>
+                  )} */}
+                  {proj?.members?.slice(0, MAX_VISIBLE).map((member, index) => {
+                    const name = member?.name;
+
+                    // If name is not available, skip rendering this member
+                    if (!name) return null;
+
+                    const initials = name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase();
+
+                    return (
+                      <div
+                        key={index}
+                        className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold"
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          fontSize: "0.75rem",
+                          backgroundColor: "#f4a261",
+                          zIndex: MAX_VISIBLE - index,
+                          marginLeft: index > 0 ? "-8px" : "0",
+                          border: "2px solid white",
+                        }}
+                        title={name}
+                      >
+                        {initials}
+                      </div>
+                    );
+                  })}
+
+                  {proj?.members?.length > MAX_VISIBLE && (
                     <div
                       className="rounded-circle text-dark d-flex align-items-center justify-content-center fw-bold"
                       style={{

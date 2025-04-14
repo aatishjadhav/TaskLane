@@ -5,25 +5,33 @@ export const addNewTeam = createAsyncThunk(
   "project/addNewTeam",
   async (projData) => {
     const token = localStorage.getItem("token");
-    const response = await axios.post(
-      "http://localhost:4000/teams",
-      projData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.post("http://localhost:4000/teams", projData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     console.log("response from rtk", response);
     return response.data;
   }
 );
-export const fetchTeams = createAsyncThunk(
-  "project/fetchTeams",
-  async () => {
+export const fetchTeams = createAsyncThunk("project/fetchTeams", async () => {
+  const token = localStorage.getItem("token");
+  const response = await axios.get("http://localhost:4000/teams", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log("response from rtk", response);
+  return response.data;
+});
+
+export const updateTeam = createAsyncThunk(
+  "teams/updateTeam",
+  async ({ teamId, updatedTeam }) => {
     const token = localStorage.getItem("token");
-    const response = await axios.get(
-      "http://localhost:4000/teams",
+    const response = await axios.put(
+      `http://localhost:4000/teams/${teamId}`,
+      updatedTeam,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -31,7 +39,8 @@ export const fetchTeams = createAsyncThunk(
       }
     );
     console.log("response from rtk", response);
-    return response.data;
+
+    return response.data.team;
   }
 );
 
@@ -65,6 +74,14 @@ export const teamSlice = createSlice({
     builder.addCase(addNewTeam.rejected, (state, action) => {
       state.status = "failed";
       state.error = action.error.message;
+    });
+    builder.addCase(updateTeam.fulfilled, (state, action) => {
+      const index = state.teams.findIndex(
+        (team) => team._id === action.payload._id
+      );
+      if (index !== -1) {
+        state.teams[index] = action.payload;
+      }
     });
   },
 });
