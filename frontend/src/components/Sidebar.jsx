@@ -19,19 +19,19 @@ const Sidebar = () => {
           </Link>
         </li>
         <li className="nav-item mt-2">
-          <Link href="/team" className="nav-link text-secondary">
+          <Link to="/team" className="nav-link text-secondary">
             <i className="bi bi-people me-2"></i>Team
           </Link>
         </li>
         <li className="nav-item mt-2">
-          <a href="/reports" className="nav-link text-secondary">
+          <Link to="/reports" className="nav-link text-secondary">
             <i className="bi bi-graph-up me-2"></i>Reports
-          </a>
+          </Link>
         </li>
         <li className="nav-item mt-2">
-          <a href="/setting" className="nav-link text-secondary">
+          <Link to="/setting" className="nav-link text-secondary">
             <i className="bi bi-gear me-2"></i>Setting
-          </a>
+          </Link>
         </li>
       </ul>
     </div>

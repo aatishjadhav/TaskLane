@@ -6,17 +6,25 @@ import { addNewProject, fetchProject } from "../slices/projectSlice";
 import { fetchTeams } from "../slices/teamSlice";
 import { fetchUser } from "../slices/userSlice";
 import { Link } from "react-router-dom";
+import { addNewTask, fetchTasks } from "../slices/taskSlice";
 
 const Home = () => {
-  const { data: projectData, error: projectError } = useFetch(
-    "http://localhost:4000/projects"
-  );
-  console.log("project data:", projectData);
+  //   const { data: projectData, error: projectError } = useFetch(
+  //     "http://localhost:4000/projects"
+  //   );
+  //   console.log("project data:", projectData);
 
-  const { data: taskData, error: taskError } = useFetch(
-    "http://localhost:4000/tasks"
-  );
-  console.log("task data:", taskData);
+  //   const { data: taskData, error: taskError } = useFetch(
+  //     "http://localhost:4000/tasks"
+  //   );
+  //   console.log("task data:", taskData);
+
+  const { tasks } = useSelector((state) => state.tasks);
+  console.log("task data:", tasks);
+
+  const { project } = useSelector((state) => state.project);
+  console.log("project data:", project);
+
   const MAX_VISIBLE = 3;
 
   const dispatch = useDispatch();
@@ -36,14 +44,25 @@ const Home = () => {
   console.log("Users Data", users);
 
   useEffect(() => {
+    dispatch(fetchProject());
+  }, [dispatch]);
+
+  useEffect(() => {
     dispatch(fetchTeams());
+  }, [dispatch]);
+
+  useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
 
-  const handleAddProject = (e) => {
+  useEffect(() => {
+    dispatch(fetchTasks());
+  }, [dispatch]);
+
+  const handleAddProject = async (e) => {
     e.preventDefault();
     const projData = { name, description };
-    dispatch(addNewProject(projData));
+    await dispatch(addNewProject(projData));
     dispatch(fetchProject());
     console.log("project data", projData);
     setName("");
@@ -55,8 +74,34 @@ const Home = () => {
     modal.hide();
   };
 
-  const handleAddTask = (e) => {
+  const handleAddTask = async (e) => {
     e.preventDefault();
+
+    const newTask = {
+      project: taskProj,
+      name: taskName,
+      status,
+      timeToComplete,
+      owners: users.filter((u) => owner.includes(u._id)),
+      tags,
+      team,
+    };
+
+    await dispatch(addNewTask(newTask));
+    dispatch(fetchTasks());
+    setTaskName("");
+    setStatus("To Do");
+    setOwner([]);
+    setTags([]);
+    setTimeToComplete("");
+    setTaskProj("");
+    setTeam("");
+
+    // Close the modal
+    const modal = bootstrap.Modal.getInstance(
+      document.getElementById("exampleModal1")
+    );
+    modal?.hide();
   };
 
   return (
@@ -184,11 +229,13 @@ const Home = () => {
           </div>
         </div>
         <div className="row">
-          {projectData?.map((proj) => (
-            <div key={proj._id} className="col-md-4 mb-3">
+          {project?.map((proj) => (
+            <div key={proj?._id} className="col-md-4 mb-3">
               <div className="card p-3 bg-light border-0">
-              <Link className="nav-link" to={`/project/${proj._id}`}><h5 className="card-title">{proj.name}</h5></Link>
-                {proj.description.split(" ").slice(0, 25).join(" ")}...
+                <Link className="nav-link" to={`/project/${proj._id}`}>
+                  <h5 className="card-title">{proj?.name}</h5>
+                </Link>
+                {proj?.description?.split(" ").slice(0, 25).join(" ")}...
               </div>
             </div>
           ))}
@@ -279,7 +326,7 @@ const Home = () => {
                         value={taskProj}
                         onChange={(e) => setTaskProj(e.target.value)}
                       >
-                        {projectData?.map((pro) => (
+                        {project?.map((pro) => (
                           <option value={pro._id}>{pro.name}</option>
                         ))}
                       </select>
@@ -346,9 +393,9 @@ const Home = () => {
                           )
                         }
                       >
-                        {taskData?.map((pro) => (
+                        {tasks?.map((pro) => (
                           <>
-                            {pro.tags.map((tag) => (
+                            {pro?.tags?.map((tag) => (
                               <option value={tag}>{tag}</option>
                             ))}
                           </>
@@ -380,7 +427,7 @@ const Home = () => {
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
                       >
-                        {taskData?.map((pro) => (
+                        {tasks?.map((pro) => (
                           <option value={pro.status}>{pro.status}</option>
                         ))}
                       </select>
@@ -404,29 +451,29 @@ const Home = () => {
           </div>
         </div>
         <div className="row">
-          {taskData?.map((proj) => (
-            <div key={proj._id} className="col-md-4 mb-3">
+          {tasks?.map((proj) => (
+            <div key={proj?._id} className="col-md-4 mb-3">
               <div className="card p-3 bg-light border-0">
                 <p
                   className={`d-inline-block px-2 rounded ${
-                    proj.status === "In Progress"
+                    proj?.status === "In Progress"
                       ? "bg-warning-subtle text-warning"
-                      : proj.status === "Completed"
+                      : proj?.status === "Completed"
                       ? "bg-success-subtle text-success"
                       : "bg-secondary-subtle text-secondary-emphasis"
                   }`}
                   style={{ width: "fit-content", minWidth: "auto" }}
                 >
-                  {proj.status}
+                  {proj?.status}
                 </p>
 
-                <h5 className="card-title">{proj.name}</h5>
+                <h5 className="card-title">{proj?.name}</h5>
 
                 <div
                   className="d-flex align-items-center"
                   style={{ gap: "0.25rem" }}
                 >
-                  {proj.owners.slice(0, MAX_VISIBLE).map((owner, index) => (
+                  {proj?.owners?.slice(0, MAX_VISIBLE).map((owner, index) => (
                     <div
                       key={index}
                       className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold"
@@ -439,9 +486,9 @@ const Home = () => {
                         marginLeft: index > 0 ? "-8px" : "0",
                         border: "2px solid white",
                       }}
-                      title={owner.name}
+                      title={owner?.name}
                     >
-                      {owner.name
+                      {owner?.name
                         .split(" ")
                         .map((n) => n[0])
                         .join("")
@@ -449,7 +496,7 @@ const Home = () => {
                     </div>
                   ))}
 
-                  {proj.owners.length > MAX_VISIBLE && (
+                  {proj?.owners?.length > MAX_VISIBLE && (
                     <div
                       className="rounded-circle text-dark d-flex align-items-center justify-content-center fw-bold"
                       style={{
@@ -461,9 +508,9 @@ const Home = () => {
                         border: "2px solid white",
                         zIndex: 0,
                       }}
-                      title={`+${proj.owners.length - MAX_VISIBLE} more`}
+                      title={`+${proj?.owners?.length - MAX_VISIBLE} more`}
                     >
-                      +{proj.owners.length - MAX_VISIBLE}
+                      +{proj?.owners?.length - MAX_VISIBLE}
                     </div>
                   )}
                 </div>

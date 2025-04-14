@@ -1,13 +1,14 @@
-const {initializeDatabase} = require("./db/db.connect");
+const { initializeDatabase } = require("./db/db.connect");
 const Project = require("./models/projects.models");
 const Tags = require("./models/tags.models");
 const Tasks = require("./models/tasks.models");
 const Teams = require("./models/teams.models");
 const Users = require("./models/users.models");
+const Members = require("./models/members.models");
 initializeDatabase();
 const express = require("express");
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const cors = require("cors");
 require("dotenv").config();
 const app = express();
@@ -29,7 +30,6 @@ const verifyJWtT = (req, res, next) => {
   if (!token) {
     return res.status(401).json({ message: "Token format invalid." });
   }
-
 
   try {
     const decodeToken = jwt.verify(token, JWT_SECRET);
@@ -83,7 +83,8 @@ app.get("/tasks", verifyJWtT, async (req, res) => {
 
 app.post("/tasks", verifyJWtT, async (req, res) => {
   try {
-    const { name, project, team, owners, tags, timeToComplete, status } = req.body;
+    const { name, project, team, owners, tags, timeToComplete, status } =
+      req.body;
     const addTasks = new Tasks({
       name,
       project,
@@ -91,7 +92,7 @@ app.post("/tasks", verifyJWtT, async (req, res) => {
       owners,
       tags,
       timeToComplete,
-      status
+      status,
     });
     await addTasks.save();
     if (addTasks) {
@@ -141,7 +142,7 @@ app.delete("/tasks/:id", verifyJWtT, async (req, res) => {
 
 app.get("/teams", verifyJWtT, async (req, res) => {
   try {
-    const getTeams = await Teams.find();
+    const getTeams = await Teams.find().populate("members", "name");
     if (getTeams) {
       res.status(200).json(getTeams);
     } else {
@@ -152,47 +153,52 @@ app.get("/teams", verifyJWtT, async (req, res) => {
   }
 });
 
-app.post("/teams", verifyJWtT, async (req, res) => {
-  try {
-    const { name, description, members } = req.body;
-    const addTeams = new Teams({ name, description, members });
-    await addTeams.save();
-    if (addTeams) {
-      res.status(201).json({ message: "New Team added", team: addTeams });
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Internal Server error" });
-  }
-});
-
-// app.post("/teams", async (req, res) => {
+// app.post("/teams", verifyJWtT, async (req, res) => {
 //   try {
 //     const { name, description, members } = req.body;
-
-//     const memberIds = [];
-
-//     for (const memberName of members) {
-//       let user = await User.findOne({ name: memberName });
-
-//       if (!user) {
-//         user = await User.create({ name: memberName });
-//       }
-
-//       memberIds.push(user._id);
+//     const addTeams = new Teams({ name, description, members });
+//     await addTeams.save();
+//     if (addTeams) {
+//       res.status(201).json({ message: "New Team added", team: addTeams });
 //     }
-
-//     const newTeam = await Team.create({
-//       name,
-//       description,
-//       members: memberIds,
-//     });
-
-//     res.status(201).json(newTeam);
 //   } catch (error) {
-//     console.error("Error creating team:", error);
-//     res.status(500).json({ error: "Failed to create team" });
+//     res.status(500).json({ message: "Internal Server error" });
 //   }
 // });
+
+app.post("/teams", async (req, res) => {
+  try {
+    const { name, members } = req.body;
+
+    const memberIds = [];
+
+    for (const memberName of members) {
+      let user = await Members.findOne({ name: memberName });
+
+      if (!user) {
+        user = await Members.create({ name: memberName });
+      }
+
+      memberIds.push(user._id);
+    }
+
+    const newTeam = await Teams.create({
+      name,
+      members: memberIds,
+    });
+
+    // Populate the members with their names
+    const populatedTeam = await Teams.findById(newTeam._id).populate(
+      "members",
+      "name"
+    );
+
+    res.status(201).json(populatedTeam);
+  } catch (error) {
+    console.error("Error creating team:", error);
+    res.status(500).json({ error: "Failed to create team" });
+  }
+});
 
 app.put("/teams/:id", verifyJWtT, async (req, res) => {
   try {
@@ -250,7 +256,7 @@ app.get("/projects", verifyJWtT, async (req, res) => {
       projects.map(async (project) => {
         const tasks = await Tasks.find({ project: project._id })
           .select("name status team owners tags timeToComplete")
-          .populate("team", "name")       // populate team name if needed
+          .populate("team", "name") // populate team name if needed
           .populate("owners", "name email"); // populate owner names and emails
 
         return {
@@ -327,9 +333,21 @@ app.get("/users", verifyJWtT, async (req, res) => {
   try {
     const getAllUsers = await Users.find();
     if (getAllUsers) {
-     return res.status(200).json(getAllUsers);
+      return res.status(200).json(getAllUsers);
     } else {
-     return res.status(400).json({ message: "Failed to fetch users" });
+      return res.status(400).json({ message: "Failed to fetch users" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server error" });
+  }
+});
+app.get("/members", verifyJWtT, async (req, res) => {
+  try {
+    const getAllUsers = await Members.find();
+    if (getAllUsers) {
+      return res.status(200).json(getAllUsers);
+    } else {
+      return res.status(400).json({ message: "Failed to fetch users" });
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server error" });
@@ -414,18 +432,18 @@ app.post("/login", async (req, res) => {
   try {
     const user = await Users.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid email' });
+      return res.status(400).json({ message: "Invalid email" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: 'Invalid password' });
+    if (!isMatch) return res.status(400).json({ message: "Invalid password" });
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '24h' });
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: "24h",
+    });
     res.json({ token });
-
   } catch (error) {
-    res.status(500).json({ message: 'Login failed', error});
+    res.status(500).json({ message: "Login failed", error });
   }
 });
 
@@ -441,14 +459,10 @@ app.post("/signup", async (req, res) => {
     await user.save();
     res.status(200).json({ message: "user registered successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Signup failed', error});
+    res.status(500).json({ message: "Signup failed", error });
   }
 });
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
-
-
-
-

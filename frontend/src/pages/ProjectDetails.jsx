@@ -7,7 +7,6 @@ import { useFetch } from "../hooks/useFetch";
 import { addNewTask, fetchTasks } from "../slices/taskSlice";
 
 const ProjectDetails = () => {
-  const [projectsData, setProjectsData] = useState("");
   const [taskName, setTaskName] = useState("");
   const [taskProj, setTaskProj] = useState("");
   const [team, setTeam] = useState("");
@@ -17,13 +16,15 @@ const ProjectDetails = () => {
   const [status, setStatus] = useState("");
   const [currentProject, setCurrentProject] = useState(null);
 
+  const [sortBy, setSortBy] = useState("Newest First");
+  const [selected, setSelected] = useState("Filter");
+
   const dispatch = useDispatch();
   const { project } = useSelector((state) => state.project);
   console.log("project data", project);
 
   const { teams } = useSelector((state) => state.teams);
   const { users } = useSelector((state) => state.users);
-
 
   const { data: projectData, error: projectError } = useFetch(
     "http://localhost:4000/projects"
@@ -41,13 +42,11 @@ const ProjectDetails = () => {
   const getProject = project.find((proj) => proj._id == projectId);
   console.log("Matched project", getProject);
   const MAX_VISIBLE = 3;
+    
   useEffect(() => {
     dispatch(fetchProject());
   }, [dispatch]);
 
-  const [sortBy, setSortBy] = useState("Newest First");
-
-  const [selected, setSelected] = useState("Filter");
   const filteredTasks =
     selected === "Filter"
       ? currentProject?.tasks
@@ -79,8 +78,8 @@ const ProjectDetails = () => {
       team,
     };
 
-      dispatch(addNewTask(newTask));
-      dispatch(fetchTasks());
+    dispatch(addNewTask(newTask));
+    dispatch(fetchTasks());
 
     setTaskName("");
     setStatus("To Do");
