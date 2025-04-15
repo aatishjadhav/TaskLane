@@ -42,7 +42,7 @@ const verifyJWtT = (req, res, next) => {
 
 app.get("/tasks", verifyJWtT, async (req, res) => {
   try {
-    const getTaks = await Tasks.find().populate("owners", "name");
+    const getTaks = await Tasks.find().populate("owners", "name").populate("team", "name");;
     if (getTaks) {
       res.status(200).json(getTaks);
     }

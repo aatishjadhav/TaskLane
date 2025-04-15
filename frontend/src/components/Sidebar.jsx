@@ -24,7 +24,7 @@ const Sidebar = () => {
           </Link>
         </li>
         <li className="nav-item mt-2">
-          <Link to="/reports" className="nav-link text-secondary">
+          <Link to="/report" className="nav-link text-secondary">
             <i className="bi bi-graph-up me-2"></i>Reports
           </Link>
         </li>
