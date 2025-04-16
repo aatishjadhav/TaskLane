@@ -5,6 +5,7 @@ import { fetchProject } from "../slices/projectSlice";
 import Sidebar from "../components/Sidebar";
 import { useFetch } from "../hooks/useFetch";
 import { addNewTask, fetchTasks } from "../slices/taskSlice";
+import { BASE_URL } from "../config";
 
 const ProjectDetails = () => {
   const [taskName, setTaskName] = useState("");
@@ -26,18 +27,17 @@ const ProjectDetails = () => {
   const { users } = useSelector((state) => state.users);
 
   const { data: projectData, error: projectError } = useFetch(
-    "http://localhost:4000/projects"
+    `${BASE_URL}/projects`
   );
 
   const { data: taskData, error: taskError } = useFetch(
-    "http://localhost:4000/tasks"
+    `${BASE_URL}/tasks`
   );
 
   const { projectId } = useParams();
-  console.log(projectId);
 
   const getProject = project.find((proj) => proj._id == projectId);
-  console.log("Matched project", getProject);
+  
   const MAX_VISIBLE = 3;
     
   useEffect(() => {

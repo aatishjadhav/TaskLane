@@ -4,11 +4,12 @@ import { addNewProject, fetchProject } from "../slices/projectSlice";
 import { useFetch } from "../hooks/useFetch";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../config";
 
 const Project = () => {
     const dispatch = useDispatch();
   const { data: projectData, error: projectError } = useFetch(
-    "http://localhost:4000/projects"
+    `${BASE_URL}/projects`
   );
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");

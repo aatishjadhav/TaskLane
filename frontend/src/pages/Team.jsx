@@ -137,46 +137,7 @@ const Team = () => {
                   className="d-flex align-items-center"
                   style={{ gap: "0.25rem" }}
                 >
-                  {/* {proj?.members.slice(0, MAX_VISIBLE).map((member, index) => (
-                    <div
-                      key={index}
-                      className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold"
-                      style={{
-                        width: "32px",
-                        height: "32px",
-                        fontSize: "0.75rem",
-                        backgroundColor: "#f4a261",
-                        zIndex: MAX_VISIBLE - index,
-                        marginLeft: index > 0 ? "-8px" : "0",
-                        border: "2px solid white",
-                      }}
-                      title={member.name}
-                    >
-                      {(member?.name)
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .toUpperCase()}
-                    </div>
-                  ))}
-
-                  {proj?.members.length > MAX_VISIBLE && (
-                    <div
-                      className="rounded-circle text-dark d-flex align-items-center justify-content-center fw-bold"
-                      style={{
-                        width: "32px",
-                        height: "32px",
-                        fontSize: "0.75rem",
-                        backgroundColor: "#f0d5a0",
-                        marginLeft: "-8px",
-                        border: "2px solid white",
-                        zIndex: 0,
-                      }}
-                      title={`+${proj.members.length - MAX_VISIBLE} more`}
-                    >
-                      +{proj.members.length - MAX_VISIBLE}
-                    </div>
-                  )} */}
+                  
                   {proj?.members?.slice(0, MAX_VISIBLE).map((member, index) => {
                     const name = member?.name;
 
