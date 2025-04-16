@@ -9,7 +9,7 @@ const Sidebar = () => {
       <h4 className="mb-4 text-primary">workasana</h4>
       <ul className="nav flex-column py-3">
         <li className="nav-item">
-          <Link to="/" className="nav-link text-secondary">
+          <Link to="/dashboard" className="nav-link text-secondary">
             <i className="bi bi-speedometer2 me-2"></i>Dashboard
           </Link>
         </li>

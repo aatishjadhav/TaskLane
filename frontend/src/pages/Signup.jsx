@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,6 +18,7 @@ const Signup = () => {
     });
     const data = await response.json();
     console.log(data);
+    navigate("/login");
   };
   return (
     <div className="d-flex justify-content-center align-items-center py-5">
