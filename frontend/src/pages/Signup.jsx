@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { BASE_URL } from "../config";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -9,7 +11,7 @@ const Signup = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:4000/signup", {
+    const response = await fetch(`${BASE_URL}/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -18,7 +20,7 @@ const Signup = () => {
     });
     const data = await response.json();
     console.log(data);
-    navigate("/login");
+    navigate("/");
   };
   return (
     <div className="d-flex justify-content-center align-items-center py-5">
@@ -59,6 +61,12 @@ const Signup = () => {
         <button type="submit" className="btn btn-primary w-100">
           Sign In
         </button>
+        <div className="d-flex gap-2 py-3 justify-content-center align-items-center">
+          <span> Already a User?</span>{" "}
+          <Link to="/" className="nav-link" style={{ color: "blue" }}>
+            Login
+          </Link>
+        </div>
       </form>
     </div>
   );
