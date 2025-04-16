@@ -275,8 +275,8 @@ app.get("/projects", verifyJWtT, async (req, res) => {
 
 app.post("/project", verifyJWtT, async (req, res) => {
   try {
-    const { name, description } = req.body;
-    const addNewProject = new Project({ name, description });
+    const { name, description, status } = req.body;
+    const addNewProject = new Project({ name, description, status });
     await addNewProject.save();
     if (addNewProject) {
       res

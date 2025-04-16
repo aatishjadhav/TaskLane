@@ -12,6 +12,7 @@ const Project = () => {
   );
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   console.log("project data:", projectData);
   const handleAddProject = (e) => {
     e.preventDefault();
@@ -27,6 +28,8 @@ const Project = () => {
     );
     modal.hide();
   };
+
+  const filteredProjects = projectData?.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
   return (
     <div className="d-flex vh-100">
       {/* Sidebar */}
@@ -42,6 +45,8 @@ const Project = () => {
             class="form-control"
             aria-label="Sizing example input"
             aria-describedby="inputGroup-sizing-default"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <span class="input-group-text" id="inputGroup-sizing-default">
             <i class="bi bi-search"></i>
@@ -152,9 +157,21 @@ const Project = () => {
           </div>
         </div>
         <div className="row">
-          {projectData?.map((proj) => (
+          {filteredProjects?.map((proj) => (
             <div key={proj._id} className="col-md-4 mb-3">
               <div className="card p-3 bg-light border-0">
+              <p
+                  className={`d-inline-block px-2 rounded ${
+                    proj?.status === "In Progress"
+                      ? "bg-warning-subtle text-warning"
+                      : proj?.status === "Completed"
+                      ? "bg-success-subtle text-success"
+                      : "bg-secondary-subtle text-secondary-emphasis"
+                  }`}
+                  style={{ width: "fit-content", minWidth: "auto" }}
+                >
+                  {proj?.status}
+                </p>
                 <Link className="nav-link" to={`/project/${proj._id}`}>
                   <h5 className="card-title">{proj.name}</h5>
                 </Link>

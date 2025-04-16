@@ -18,6 +18,9 @@ const Home = () => {
   //     "http://localhost:4000/tasks"
   //   );
   //   console.log("task data:", taskData);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [projectStatus, setProjectStatus] = useState("All");
+  const [taskStatus, setTaskStatus] = useState("All");
 
   const { tasks } = useSelector((state) => state.tasks);
   console.log("task data:", tasks);
@@ -104,6 +107,24 @@ const Home = () => {
     modal?.hide();
   };
 
+  const filteredProjects = project?.filter((p) => {
+    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
+  
+    const matchesStatus =
+      projectStatus === "All" || p.status === projectStatus;
+  
+    return matchesSearch && matchesStatus;
+  });
+
+  const filteredTasks = tasks?.filter((t) => {
+    const matchesSearch = t.name.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+    taskStatus === "All" || t.status === taskStatus;
+
+  return matchesSearch && matchesStatus;
+  });
+
   return (
     <div className="d-flex vh-100">
       {/* Sidebar */}
@@ -119,6 +140,8 @@ const Home = () => {
             class="form-control"
             aria-label="Sizing example input"
             aria-describedby="inputGroup-sizing-default"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <span class="input-group-text" id="inputGroup-sizing-default">
             <i class="bi bi-search"></i>
@@ -126,33 +149,17 @@ const Home = () => {
         </div>
         <div className="d-flex py-3">
           <h3>Projects</h3>
-          <div class="dropdown mx-3">
-            <button
-              class="btn btn-light dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
+          <select
+              className="form-select mx-3"
+              style={{ width: "150px" }}
+              value={projectStatus}
+              onChange={(e) => setProjectStatus(e.target.value)}
             >
-              Filter
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="#">
-                  Action
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">
-                  Another action
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">
-                  Something else here
-                </a>
-              </li>
-            </ul>
-          </div>
+              <option value="All">All</option>
+              <option value="To Do">To Do</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
           <button
             type="button"
             class="btn btn-primary ms-auto"
@@ -229,9 +236,21 @@ const Home = () => {
           </div>
         </div>
         <div className="row">
-          {project?.map((proj) => (
+          {filteredProjects?.map((proj) => (
             <div key={proj?._id} className="col-md-4 mb-3">
               <div className="card p-3 bg-light border-0">
+              <p
+                  className={`d-inline-block px-2 rounded ${
+                    proj?.status === "In Progress"
+                      ? "bg-warning-subtle text-warning"
+                      : proj?.status === "Completed"
+                      ? "bg-success-subtle text-success"
+                      : "bg-secondary-subtle text-secondary-emphasis"
+                  }`}
+                  style={{ width: "fit-content", minWidth: "auto" }}
+                >
+                  {proj?.status}
+                </p>
                 <Link className="nav-link" to={`/project/${proj._id}`}>
                   <h5 className="card-title">{proj?.name}</h5>
                 </Link>
@@ -242,33 +261,17 @@ const Home = () => {
         </div>
         <div className="d-flex py-3">
           <h3>Tasks</h3>
-          <div class="dropdown mx-3">
-            <button
-              class="btn btn-light dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
+          <select
+              className="form-select mx-3"
+              style={{ width: "150px" }}
+              value={taskStatus}
+              onChange={(e) => setTaskStatus(e.target.value)}
             >
-              Filter
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="#">
-                  Action
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">
-                  Another action
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">
-                  Something else here
-                </a>
-              </li>
-            </ul>
-          </div>
+              <option value="All">All</option>
+              <option value="To Do">To Do</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
           <button
             type="button"
             class="btn btn-primary ms-auto"
@@ -451,7 +454,7 @@ const Home = () => {
           </div>
         </div>
         <div className="row">
-          {tasks?.map((proj) => (
+          {filteredTasks?.map((proj) => (
             <div key={proj?._id} className="col-md-4 mb-3">
               <div className="card p-3 bg-light border-0">
                 <p
