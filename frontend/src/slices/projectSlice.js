@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BASE_URL } from "../config";
 
 export const addNewProject = createAsyncThunk(
   "project/addNewProject",
   async (projData) => {
     const token = localStorage.getItem("token");
     const response = await axios.post(
-      "http://localhost:4000/project",
+      `${BASE_URL}/project`,
       projData,
       {
         headers: {
@@ -23,7 +24,7 @@ export const fetchProject = createAsyncThunk(
   async () => {
     const token = localStorage.getItem("token");
     const response = await axios.get(
-      "http://localhost:4000/projects",
+      `${BASE_URL}/projects`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -23,10 +23,8 @@ const Home = () => {
   const [taskStatus, setTaskStatus] = useState("All");
 
   const { tasks } = useSelector((state) => state.tasks);
-  console.log("task data:", tasks);
 
   const { project } = useSelector((state) => state.project);
-  console.log("project data:", project);
 
   const MAX_VISIBLE = 3;
 
@@ -43,8 +41,6 @@ const Home = () => {
 
   const { teams } = useSelector((state) => state.teams);
   const { users } = useSelector((state) => state.users);
-  console.log("Teams Data", teams);
-  console.log("Users Data", users);
 
   useEffect(() => {
     dispatch(fetchProject());
@@ -67,7 +63,7 @@ const Home = () => {
     const projData = { name, description };
     await dispatch(addNewProject(projData));
     dispatch(fetchProject());
-    console.log("project data", projData);
+    
     setName("");
     setDescription("");
     // Close the modal
