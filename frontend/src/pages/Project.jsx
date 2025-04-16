@@ -13,13 +13,14 @@ const Project = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  console.log("project data:", projectData);
+  const [projectStatus, setProjectStatus] = useState("All");
+ 
   const handleAddProject = (e) => {
     e.preventDefault();
     const projData = { name, description };
     dispatch(addNewProject(projData));
     dispatch(fetchProject());
-    console.log("project data", projData);
+    
     setName("");
     setDescription("");
     // Close the modal
@@ -29,7 +30,14 @@ const Project = () => {
     modal.hide();
   };
 
-  const filteredProjects = projectData?.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredProjects = projectData?.filter((p) => {
+    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
+  
+    const matchesStatus =
+      projectStatus === "All" || p.status === projectStatus;
+  
+    return matchesSearch && matchesStatus;
+  });
   return (
     <div className="d-flex vh-100">
       {/* Sidebar */}
@@ -54,33 +62,17 @@ const Project = () => {
         </div>
         <div className="d-flex py-3">
           <h3>Projects</h3>
-          <div class="dropdown mx-3">
-            <button
-              class="btn btn-light dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
+          <select
+              className="form-select mx-3"
+              style={{ width: "150px" }}
+              value={projectStatus}
+              onChange={(e) => setProjectStatus(e.target.value)}
             >
-              Filter
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="#">
-                  Action
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">
-                  Another action
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">
-                  Something else here
-                </a>
-              </li>
-            </ul>
-          </div>
+              <option value="All">All</option>
+              <option value="To Do">To Do</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
           <button
             type="button"
             class="btn btn-primary ms-auto"

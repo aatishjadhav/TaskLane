@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 const Team = () => {
   const dispatch = useDispatch();
   const { teams } = useSelector((state) => state.teams);
-  console.log("Teams data", teams);
 
   const MAX_VISIBLE = 3;
   const [name, setName] = useState("");
@@ -19,7 +18,7 @@ const Team = () => {
       name,
       members,
     };
-    console.log("teamData:", teamData);
+
     dispatch(addNewTeam(teamData));
 
     setName("");

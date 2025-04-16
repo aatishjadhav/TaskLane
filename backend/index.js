@@ -42,7 +42,9 @@ const verifyJWtT = (req, res, next) => {
 
 app.get("/tasks", verifyJWtT, async (req, res) => {
   try {
-    const getTaks = await Tasks.find().populate("owners", "name").populate("team", "name");;
+    const getTaks = await Tasks.find()
+      .populate("owners", "name")
+      .populate("team", "name");
     if (getTaks) {
       res.status(200).json(getTaks);
     }
@@ -404,29 +406,6 @@ app.delete("/users/:id", verifyJWtT, async (req, res) => {
   }
 });
 
-// app.put("/:teamId/add-member-by-name", async (req, res) => {
-//   const { name } = req.body;
-//   const { teamId } = req.params;
-
-//   try {
-//     const user = await Users.findOne({ name: name.trim() });
-
-//     if (!user) {
-//       return res.status(404).json({ error: `No user found with name "${name}"` });
-//     }
-
-//     const team = await Teams.findByIdAndUpdate(
-//       teamId,
-//       { $addToSet: { members: user._id } }, // Add user ID if not already present
-//       { new: true }
-//     ).populate("members");
-
-//     res.json(user); // You can also return updated team if needed
-//   } catch (err) {
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
-
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -441,7 +420,10 @@ app.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
       expiresIn: "24h",
     });
-    res.json({ token });
+    // Remove sensitive fields like password before sending
+    const { password: _, ...userWithoutPassword } = user.toObject();
+
+    res.json({ token, user: userWithoutPassword });
   } catch (error) {
     res.status(500).json({ message: "Login failed", error });
   }

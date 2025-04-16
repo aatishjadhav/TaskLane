@@ -14,7 +14,6 @@ export const addNewTask = createAsyncThunk(
         },
       }
     );
-    console.log("response from rtk", response);
     return response.data;
   }
 );
@@ -30,7 +29,6 @@ export const fetchTasks = createAsyncThunk(
         },
       }
     );
-    console.log("response from rtk", response);
     return response.data;
   }
 );

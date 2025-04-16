@@ -14,7 +14,7 @@ export const addNewProject = createAsyncThunk(
         },
       }
     );
-    console.log("response from rtk", response);
+
     return response.data;
   }
 );
@@ -30,7 +30,6 @@ export const fetchProject = createAsyncThunk(
         },
       }
     );
-    console.log("response from rtk", response);
     return response.data;
   }
 );

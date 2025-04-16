@@ -7,6 +7,7 @@ import Project from "./pages/Project";
 import Team from "./pages/Team";
 import TeamDetails from "./pages/TeamDetails";
 import Report from "./pages/Report";
+import UserSettings from "./pages/UserSettings";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/team" element={<Team />} />
         <Route path="/team/:teamId" element={<TeamDetails />} />
         <Route path="/report" element={<Report />} />
+        <Route path="/setting" element={<UserSettings />} />
       </Routes>
     </>
   );

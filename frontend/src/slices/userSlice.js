@@ -11,25 +11,23 @@ export const fetchUser = createAsyncThunk("users/fetchUser", async () => {
   });
   return response.data;
 });
-export const fetchMember = createAsyncThunk("users/fetchMember", async () => {
-  const token = localStorage.getItem("token");
-  const response = await axios.get(`${BASE_URL}/members`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
-});
+
 
 export const userSlice = createSlice({
   name: "user",
   initialState: {
     users: [],
-    members: [],
     status: "idle",
     error: null,
   },
-  reducers: {},
+  reducers: {
+    setUser: (state, action) => {
+      state.users = action.payload;
+    },
+    logout: (state) => {
+      state.users = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchUser.pending, (state) => {
       state.status = "loading";
@@ -42,18 +40,10 @@ export const userSlice = createSlice({
       state.status = "failed";
       state.error = action.error.message;
     });
-    builder.addCase(fetchMember.pending, (state) => {
-      state.status = "loading";
-    });
-    builder.addCase(fetchMember.fulfilled, (state, action) => {
-      state.status = "success";
-      state.members = action.payload;
-    });
-    builder.addCase(fetchMember.rejected, (state, action) => {
-      state.status = "failed";
-      state.error = action.error.message;
-    });
+  
   },
 });
+
+export const { setUser, logout } = userSlice.actions;
 
 export default userSlice.reducer;

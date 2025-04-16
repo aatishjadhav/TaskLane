@@ -10,7 +10,6 @@ export const addNewTeam = createAsyncThunk(
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("response from rtk", response);
     return response.data;
   }
 );
@@ -21,7 +20,6 @@ export const fetchTeams = createAsyncThunk("project/fetchTeams", async () => {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log("response from rtk", response);
   return response.data;
 });
 
@@ -38,7 +36,6 @@ export const updateTeam = createAsyncThunk(
         },
       }
     );
-    console.log("response from rtk", response);
 
     return response.data.team;
   }

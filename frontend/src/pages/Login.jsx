@@ -80,6 +80,7 @@ const Login = () => {
       }
 
       localStorage.setItem("token", data.token);
+      localStorage.setItem("users", JSON.stringify(data.user));
       navigate("/dashboard");
     } catch (err) {
       setError("Something went wrong. Please try again.");

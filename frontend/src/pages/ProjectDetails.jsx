@@ -21,7 +21,6 @@ const ProjectDetails = () => {
 
   const dispatch = useDispatch();
   const { project } = useSelector((state) => state.project);
-  console.log("project data", project);
 
   const { teams } = useSelector((state) => state.teams);
   const { users } = useSelector((state) => state.users);
@@ -29,12 +28,10 @@ const ProjectDetails = () => {
   const { data: projectData, error: projectError } = useFetch(
     "http://localhost:4000/projects"
   );
-  console.log("project data:", projectData);
 
   const { data: taskData, error: taskError } = useFetch(
     "http://localhost:4000/tasks"
   );
-  console.log("task data:", taskData);
 
   const { projectId } = useParams();
   console.log(projectId);
@@ -108,28 +105,6 @@ const ProjectDetails = () => {
 
         <div className="d-flex align-items-center flex-wrap gap-3 py-3">
           <span className="fw-semibold">Sort by:</span>
-
-          <label className="form-check-label d-flex align-items-center gap-1">
-            <input
-              type="radio"
-              name="priority"
-              className="form-check-input"
-              checked={sortBy === "Low to High"}
-              onChange={() => setSortBy("Low to High")}
-            />
-            Low to High
-          </label>
-
-          <label className="form-check-label d-flex align-items-center gap-1">
-            <input
-              type="radio"
-              name="priority"
-              className="form-check-input"
-              checked={sortBy === "High to Low"}
-              onChange={() => setSortBy("High to Low")}
-            />
-            High to Low
-          </label>
 
           <label className="form-check-label d-flex align-items-center gap-1">
             <input

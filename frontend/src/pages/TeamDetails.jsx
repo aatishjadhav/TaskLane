@@ -14,7 +14,6 @@ const TeamDetails = () => {
   const [name, setName] = useState("");
 
   const { members, status } = useSelector((state) => state.members);
-  console.log("members", members);
 
   useEffect(() => {
     dispatch(fetchMember());

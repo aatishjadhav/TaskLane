@@ -12,12 +12,12 @@ const Report = () => {
 
       {/* Main Content */}
       <div className="flex-grow-1 p-4 container overflow-auto">
-              <h1>Reports</h1>
-              <div>
-        <ClosedTaskByTeam />
+        <h1>Reports</h1>
+        <div>
+          <ClosedTaskByTeam />
 
-                  <WeeklyTaskStats />
-                  </div>
+          <WeeklyTaskStats />
+        </div>
       </div>
     </div>
   );
