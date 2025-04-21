@@ -13,11 +13,22 @@ const cors = require("cors");
 require("dotenv").config();
 const app = express();
 app.use(express.json());
+// CORS config to allow your frontend
+const allowedOrigins = ['https://workasana.onrender.com'];
+
 app.use(cors({
-  origin: "https://workasana.onrender.com",
-  credentials: true,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed for this origin'));
+    }
+  },
+  credentials: true
 }));
-app.options("*", cors());
+
+// Allow preflight across the board
+app.options('*', cors());
 
 
 const PORT = process.env.PORT;
@@ -434,3 +445,5 @@ app.post("/signup", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+module.exports = app;
