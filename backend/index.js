@@ -14,7 +14,7 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 // CORS config to allow your frontend
-const allowedOrigins = ['https://workasana.onrender.com'];
+const allowedOrigins = ['https://workasana.onrender.com/'];
 
 app.use(cors({
   origin: function (origin, callback) {
