@@ -26,9 +26,6 @@ const ProjectDetails = () => {
   const { teams } = useSelector((state) => state.teams);
   const { users } = useSelector((state) => state.users);
 
-  const { data: projectData, error: projectError } = useFetch(
-    `${BASE_URL}/projects`
-  );
 
   const { data: taskData, error: taskError } = useFetch(
     `${BASE_URL}/tasks`

@@ -49,11 +49,12 @@ const Home = () => {
 
     setName("");
     setDescription("");
-    // Close the modal
-    const modal = bootstrap.Modal.getInstance(
-      document.getElementById("exampleModal")
-    );
-    modal.hide();
+    const modalEl = document.getElementById("exampleModal");
+    if (modalEl) {
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      modal?.hide();
+    }
+    
   };
 
   const handleAddTask = async (e) => {
@@ -79,32 +80,31 @@ const Home = () => {
     setTaskProj("");
     setTeam("");
 
-    // Close the modal
-    const modal = bootstrap.Modal.getInstance(
-      document.getElementById("exampleModal1")
-    );
-    modal?.hide();
+    const modalEl = document.getElementById("exampleModal");
+    if (modalEl) {
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      modal?.hide();
+    }
+    
   };
 
   const filteredProjects = project?.filter((p) => {
-    const matchesSearch = p?.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-
+    const name = p?.name || ""; // Fallback to empty string
+    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = projectStatus === "All" || p?.status === projectStatus;
-
+  
     return matchesSearch && matchesStatus;
   });
+  
 
   const filteredTasks = tasks?.filter((t) => {
-    const matchesSearch = t?.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-
+    const name = t?.name || "";
+    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = taskStatus === "All" || t?.status === taskStatus;
-
+  
     return matchesSearch && matchesStatus;
   });
+  
 
   return (
     <div className="container-fluid">
