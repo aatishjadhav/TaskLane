@@ -87,21 +87,21 @@ const Home = () => {
   };
 
   const filteredProjects = project?.filter((p) => {
-    const matchesSearch = p.name
+    const matchesSearch = p?.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
 
-    const matchesStatus = projectStatus === "All" || p.status === projectStatus;
+    const matchesStatus = projectStatus === "All" || p?.status === projectStatus;
 
     return matchesSearch && matchesStatus;
   });
 
   const filteredTasks = tasks?.filter((t) => {
-    const matchesSearch = t.name
+    const matchesSearch = t?.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
 
-    const matchesStatus = taskStatus === "All" || t.status === taskStatus;
+    const matchesStatus = taskStatus === "All" || t?.status === taskStatus;
 
     return matchesSearch && matchesStatus;
   });

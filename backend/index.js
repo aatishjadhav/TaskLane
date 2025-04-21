@@ -53,35 +53,6 @@ app.get("/tasks", verifyJWtT, async (req, res) => {
   }
 });
 
-// app.get("/tasks", verifyJWtT, async (req, res) => {
-//   try {
-//     const tasks = await Tasks.find()
-//       .populate("project", "name description") // include project details
-//       .populate("owners", "name") // include owner names
-//       .lean(); // lean for faster performance and to allow object manipulation
-
-//     // Grouping tasks by project on backend
-//     const groupedTasks = {};
-
-//     for (const task of tasks) {
-//       const projectId = task.project._id;
-
-//       if (!groupedTasks[projectId]) {
-//         groupedTasks[projectId] = {
-//           project: task.project,
-//           tasks: [],
-//         };
-//       }
-
-//       groupedTasks[projectId].tasks.push(task);
-//     }
-
-//     res.status(200).json(Object.values(groupedTasks));
-//   } catch (error) {
-//     console.error("Error fetching tasks:", error);
-//     res.status(500).json({ message: "Internal Server error" });
-//   }
-// });
 
 app.post("/tasks", verifyJWtT, async (req, res) => {
   try {
@@ -237,43 +208,53 @@ app.delete("/teams/:id", verifyJWtT, async (req, res) => {
   }
 });
 
-// app.get("/project", verifyJWtT, async (req, res) => {
+
+// app.get("/projects", verifyJWtT, async (req, res) => {
 //   try {
-//     const getAllProjects = await Project.find();
-//     if (getAllProjects) {
-//       res.status(200).json(getAllProjects);
-//     } else {
-//       res.status(400).json({ message: "Failed to fetch projects" });
-//     }
+//     const projects = await Project.find().lean(); // Get all projects
+
+//     const projectsWithTasks = await Promise.all(
+//       projects.map(async (project) => {
+//         const tasks = await Tasks.find({ project: project._id })
+//           .select("name status team owners tags timeToComplete")
+//           .populate("team", "name") // populate team name if needed
+//           .populate("owners", "name email"); // populate owner names and emails
+
+//         return {
+//           ...project,
+//           tasks,
+//         };
+//       })
+//     );
+
+//     res.status(200).json(projectsWithTasks);
 //   } catch (error) {
-//     res.status(500).json({ message: "Internal Server error" });
+//     console.error(error);
+//     res.status(500).json({ message: "Internal Server Error" });
 //   }
 // });
 
 app.get("/projects", verifyJWtT, async (req, res) => {
   try {
-    const projects = await Project.find().lean(); // Get all projects
+    const projects = await Project.find().lean();
 
-    const projectsWithTasks = await Promise.all(
-      projects.map(async (project) => {
-        const tasks = await Tasks.find({ project: project._id })
-          .select("name status team owners tags timeToComplete")
-          .populate("team", "name") // populate team name if needed
-          .populate("owners", "name email"); // populate owner names and emails
+    for (let project of projects) {
+      const tasks = await Tasks.find({ project: project._id })
+        .select("name status team owners tags timeToComplete")
+        .populate("team", "name")
+        .populate("owners", "name email")
+        .lean();
 
-        return {
-          ...project,
-          tasks,
-        };
-      })
-    );
+      project.tasks = tasks;
+    }
 
-    res.status(200).json(projectsWithTasks);
+    res.status(200).json(projects);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 app.post("/project", verifyJWtT, async (req, res) => {
   try {
