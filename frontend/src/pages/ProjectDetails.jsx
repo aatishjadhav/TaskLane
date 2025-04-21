@@ -22,7 +22,7 @@ const ProjectDetails = () => {
 
   const dispatch = useDispatch();
   const { project } = useSelector((state) => state.project);
-
+  const { tasks } = useSelector((state) => state.tasks);
   const { teams } = useSelector((state) => state.teams);
   const { users } = useSelector((state) => state.users);
 
@@ -72,7 +72,20 @@ const ProjectDetails = () => {
       team,
     };
 
-    await dispatch(addNewTask(newTask));
+  await dispatch(addNewTask(newTask));
+
+  // Fetch updated project by ID and update UI
+  const updatedProjects = await dispatch(fetchProject()); 
+
+  const updatedProject = updatedProjects.payload.find(
+    (proj) => proj._id === projectId
+  );
+
+    //  Force update UI with latest project state
+  if (updatedProject) {
+    setCurrentProject(updatedProject); 
+  }
+  
     dispatch(fetchTasks());
 
     setTaskName("");
@@ -361,7 +374,7 @@ const ProjectDetails = () => {
                       className="d-flex align-items-center"
                       style={{ gap: "0.25rem" }}
                     >
-                      {task.owners.slice(0, MAX_VISIBLE).map((owner, index) => (
+                      {task?.owners?.slice(0, MAX_VISIBLE).map((owner, index) => (
                         <div
                           key={index}
                           className="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold"
@@ -384,7 +397,7 @@ const ProjectDetails = () => {
                         </div>
                       ))}
 
-                      {task.owners.length > MAX_VISIBLE && (
+                      {task?.owners?.length > MAX_VISIBLE && (
                         <div
                           className="rounded-circle text-dark d-flex align-items-center justify-content-center fw-bold"
                           style={{
@@ -403,8 +416,8 @@ const ProjectDetails = () => {
                       )}
                     </div>
                   </td>
-                  <td>{task.timeToComplete}</td>
-                  <td>{task.status}</td>
+                  <td>{task?.timeToComplete}</td>
+                  <td>{task?.status}</td>
                 </tr>
               ))}
             </tbody>
