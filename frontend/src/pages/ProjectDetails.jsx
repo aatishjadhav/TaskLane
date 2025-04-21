@@ -62,7 +62,7 @@ const ProjectDetails = () => {
     dispatch(fetchTasks());
   }, [dispatch]);
 
-  const handleAddTask = (e) => {
+  const handleAddTask = async (e) => {
     e.preventDefault();
 
     const newTask = {
@@ -75,7 +75,7 @@ const ProjectDetails = () => {
       team,
     };
 
-    dispatch(addNewTask(newTask));
+    await dispatch(addNewTask(newTask));
     dispatch(fetchTasks());
 
     setTaskName("");
