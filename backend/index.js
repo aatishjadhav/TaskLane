@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 4000;
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const verifyJWtT = (req, res, next) => {
@@ -430,5 +430,3 @@ app.post("/signup", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
-
-module.exports = app;
