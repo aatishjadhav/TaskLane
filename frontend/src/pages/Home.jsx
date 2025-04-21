@@ -80,7 +80,7 @@ const Home = () => {
     setTaskProj("");
     setTeam("");
 
-    const modalEl = document.getElementById("exampleModal");
+    const modalEl = document.getElementById("exampleModal1");
     if (modalEl) {
       const modal = bootstrap.Modal.getInstance(modalEl);
       modal?.hide();
