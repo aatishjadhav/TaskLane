@@ -424,13 +424,15 @@ const Home = () => {
                             )
                           }
                         >
-                          {tasks?.map((pro) => (
-                            <>
-                              {pro?.tags?.map((tag) => (
-                                <option key={tag} value={tag}>{tag}</option>
-                              ))}
-                            </>
-                          ))}
+                         {[
+                              ...new Set(
+                                tasks?.flatMap((task) => task.tags)
+                              ),
+                            ].map((tag) => (
+                              <option key={tag} value={tag}>
+                                {tag}
+                              </option>
+                            ))}
                         </select>
                       </div>
                       <div class="mb-3">
