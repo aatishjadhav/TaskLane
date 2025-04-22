@@ -72,21 +72,8 @@ const ProjectDetails = () => {
       team,
     };
 
-  await dispatch(addNewTask(newTask));
-
-  // Fetch updated project by ID and update UI
-  const updatedProjects = await dispatch(fetchProject()); 
-
-  const updatedProject = updatedProjects.payload.find(
-    (proj) => proj._id === projectId
-  );
-
-    //  Force update UI with latest project state
-  if (updatedProject) {
-    setCurrentProject(updatedProject); 
-  }
-  
-    dispatch(fetchTasks());
+    await dispatch(addNewTask(newTask));
+    dispatch(fetchProject());
 
     setTaskName("");
     setStatus("To Do");

@@ -12,7 +12,7 @@ const Project = () => {
   // const { data: projectData, error: projectError } = useFetch(
   //   `${BASE_URL}/projects`
   // );
-  const { project, status: projectStatusFromRedux } = useSelector(
+  const { project, status } = useSelector(
     (state) => state.project
   );
 
@@ -194,7 +194,7 @@ const Project = () => {
               </div>
             </div>
           </div>
-          {projectStatusFromRedux === "loading" ? (
+          {status === "loading" ? (
             <div
               className="d-flex justify-content-center align-items-center"
               style={{ height: "70vh" }}
