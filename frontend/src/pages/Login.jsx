@@ -14,13 +14,28 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(loginUser({email, password })).unwrap();
-      toast.success("Sign Up Successful.");
+      await dispatch(loginUser({ email, password })).unwrap();
+      toast.success("Login successful!");
       navigate("/settings");
-    } catch (err) {
-      toast.error(err); 
+    } catch (error) {
+      toast.error("Invalid credentials!");
     }
-};
+  };
+
+  const handleGuestLogin = async () => {
+    const guestCredentials = {
+      email: "john@gmail.com",
+      password: "john@123",
+    };
+
+    try {
+      await dispatch(loginUser(guestCredentials)).unwrap();
+      toast.success("Logged in as Guest!");
+      navigate("/settings");
+    } catch (error) {
+      toast.error("Guest login failed!");
+    }
+  };
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
@@ -29,7 +44,7 @@ const Login = () => {
         style={{ width: "400px", backgroundColor: "#ffffff" }}
       >
         <h2 className="text-center mb-4 fw-bold" style={{ color: "#0d6efd" }}>
-          Workasana
+          Welcome Back
         </h2>
         <p className="text-center text-muted mb-4">Login to your account</p>
         <form onSubmit={handleLogin}>
@@ -66,6 +81,16 @@ const Login = () => {
             </button>
           </div>
 
+          <div className="d-grid mt-3">
+            <button
+              type="button"
+              className="btn btn-outline-secondary btn-lg rounded-3"
+              onClick={handleGuestLogin}
+            >
+              Login as Guest
+            </button>
+          </div>
+
           <div className="text-center mt-4">
             <span className="text-muted">New User? </span>
             <Link
@@ -83,4 +108,3 @@ const Login = () => {
 };
 
 export default Login;
-
