@@ -1,17 +1,17 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "../components/Sidebar";
 import { logout } from "../slices/userSlice";
 import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const UserSettings = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("users"));
+  const { user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem("token");
-    localStorage.removeItem("users");
+    toast.success("Logout successfull!");
     navigate("/");
   };
 
