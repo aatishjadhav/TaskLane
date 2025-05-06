@@ -26,7 +26,7 @@ const verifyJWtT = (req, res, next) => {
     return res.status(401).json({ message: "No token provided." });
   }
 
-  const token = authHeader.split(" ")[1]; // Extract token from "Bearer TOKEN"
+  const token = authHeader.split(" ")[1]; 
 
   if (!token) {
     return res.status(401).json({ message: "Token format invalid." });
@@ -127,19 +127,6 @@ app.get("/teams", verifyJWtT, async (req, res) => {
   }
 });
 
-// app.post("/teams", verifyJWtT, async (req, res) => {
-//   try {
-//     const { name, description, members } = req.body;
-//     const addTeams = new Teams({ name, description, members });
-//     await addTeams.save();
-//     if (addTeams) {
-//       res.status(201).json({ message: "New Team added", team: addTeams });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ message: "Internal Server error" });
-//   }
-// });
-
 app.post("/teams", async (req, res) => {
   try {
     const { name, members } = req.body;
@@ -208,32 +195,6 @@ app.delete("/teams/:id", verifyJWtT, async (req, res) => {
     res.status(500).json({ message: "Internal Server error" });
   }
 });
-
-
-// app.get("/projects", verifyJWtT, async (req, res) => {
-//   try {
-//     const projects = await Project.find().lean(); // Get all projects
-
-//     const projectsWithTasks = await Promise.all(
-//       projects.map(async (project) => {
-//         const tasks = await Tasks.find({ project: project._id })
-//           .select("name status team owners tags timeToComplete")
-//           .populate("team", "name") // populate team name if needed
-//           .populate("owners", "name email"); // populate owner names and emails
-
-//         return {
-//           ...project,
-//           tasks,
-//         };
-//       })
-//     );
-
-//     res.status(200).json(projectsWithTasks);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Internal Server Error" });
-//   }
-// });
 
 app.get("/projects", verifyJWtT, async (req, res) => {
   try {
