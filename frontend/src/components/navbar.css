@@ -1,0 +1,76 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  background-color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%; /* Make it stretch across the top */
+  z-index: 6;
+  padding: 8px 16px; /* Add vertical and horizontal padding */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds subtle shadow */
+}
+
+.cont {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* space between logo and heading */
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+.heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+}
+.right {
+  display: flex;
+  gap: 12px;
+}
+.both {
+  display: flex;
+  justify-content: space-between;
+}
+.nav-logo {
+  height: 2rem;
+}
+
+@media (max-width: 600px) {
+  .both {
+    flex-direction: column;
+    align-items: flex-start; /* Align left on mobile */
+    gap: 12px;
+  }
+
+  .right {
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* spread out icons */
+    gap: 8px;
+  }
+
+  .input-group {
+    max-width: 100% !important; /* full width on mobile */
+    width: 100%;
+  }
+
+  .form-control {
+    font-size: 14px; /* slightly smaller text */
+  }
+
+  .heading {
+    font-size: 1.3rem; /* smaller heading */
+  }
+  .menu{
+    margin-top: 38px;
+  }
+}

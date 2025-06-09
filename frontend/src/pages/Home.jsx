@@ -6,6 +6,7 @@ import { fetchTeams } from "../slices/teamSlice";
 import { fetchUser } from "../slices/userSlice";
 import { Link } from "react-router-dom";
 import { addNewTask, fetchTasks } from "../slices/taskSlice";
+import "../components/navbar.css";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -16,7 +17,7 @@ const Home = () => {
     (state) => state.project
   );
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const { searchTerm } = useSelector((state) => state.search);
   const [projectStatus, setProjectStatus] = useState("All");
   const [taskStatus, setTaskStatus] = useState("All");
   const [name, setName] = useState("");
@@ -104,7 +105,7 @@ const Home = () => {
   });
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid py-5">
       {/* Sidebar */}
       <div className="row">
         <div
@@ -142,31 +143,19 @@ const Home = () => {
         {/* Main Content */}
         <div className="col-12 col-md-9 col-lg-10 p-4">
           <button
-            className="btn btn-outline-primary d-md-none mb-3"
+            className="btn btn-outline-dark d-md-none mb-3 menu"
             type="button"
             data-bs-toggle="offcanvas"
             data-bs-target="#mobileSidebar"
             aria-controls="mobileSidebar"
           >
-            ☰ Menu
+            ☰
           </button>
-          <div class="input-group mb-3">
-            <input
-              type="text"
-              class="form-control"
-              aria-label="Sizing example input"
-              aria-describedby="inputGroup-sizing-default"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <span class="input-group-text" id="inputGroup-sizing-default">
-              <i class="bi bi-search"></i>
-            </span>
-          </div>
-          <div className="d-flex py-3">
-            <h3>Projects</h3>
+
+          <div className="d-flex flex-wrap align-items-center gap-2 py-3">
+            <h3 className="mb-0">Projects</h3>
             <select
-              className="form-select mx-3"
+              className="form-select mx-md-3"
               style={{ width: "150px" }}
               value={projectStatus}
               onChange={(e) => setProjectStatus(e.target.value)}
@@ -178,7 +167,7 @@ const Home = () => {
             </select>
             <button
               type="button"
-              class="btn btn-primary ms-auto"
+              className="btn btn-secondary ms-md-auto"
               data-bs-toggle="modal"
               data-bs-target="#exampleModal"
               data-bs-whatever="@mdo"
@@ -287,10 +276,10 @@ const Home = () => {
             </div>
           )}
 
-          <div className="d-flex py-3">
+          <div className="d-flex flex-wrap align-items-center gap-2 py-3">
             <h3>Tasks</h3>
             <select
-              className="form-select mx-3"
+              className="form-select mx-md-3"
               style={{ width: "150px" }}
               value={taskStatus}
               onChange={(e) => setTaskStatus(e.target.value)}
@@ -302,7 +291,7 @@ const Home = () => {
             </select>
             <button
               type="button"
-              class="btn btn-primary ms-auto"
+              class="btn btn-secondary ms-md-auto"
               data-bs-toggle="modal"
               data-bs-target="#exampleModal1"
               data-bs-whatever="@mdo"
@@ -358,7 +347,9 @@ const Home = () => {
                           onChange={(e) => setTaskProj(e.target.value)}
                         >
                           {project?.map((pro) => (
-                            <option key={pro._id} value={pro._id}>{pro.name}</option>
+                            <option key={pro._id} value={pro._id}>
+                              {pro.name}
+                            </option>
                           ))}
                         </select>
                       </div>
@@ -375,7 +366,9 @@ const Home = () => {
                           onChange={(e) => setTeam(e.target.value)}
                         >
                           {teams?.map((pro) => (
-                            <option key={pro._id} value={pro._id}>{pro.name}</option>
+                            <option key={pro._id} value={pro._id}>
+                              {pro.name}
+                            </option>
                           ))}
                         </select>
                       </div>
@@ -400,7 +393,9 @@ const Home = () => {
                           }
                         >
                           {users?.map((pro) => (
-                            <option key={pro._id} value={pro._id}>{pro.name}</option>
+                            <option key={pro._id} value={pro._id}>
+                              {pro.name}
+                            </option>
                           ))}
                         </select>
                       </div>
@@ -424,15 +419,13 @@ const Home = () => {
                             )
                           }
                         >
-                         {[
-                              ...new Set(
-                                tasks?.flatMap((task) => task.tags)
-                              ),
-                            ].map((tag) => (
-                              <option key={tag} value={tag}>
-                                {tag}
-                              </option>
-                            ))}
+                          {[
+                            ...new Set(tasks?.flatMap((task) => task.tags)),
+                          ].map((tag) => (
+                            <option key={tag} value={tag}>
+                              {tag}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <div class="mb-3">
@@ -461,7 +454,9 @@ const Home = () => {
                           onChange={(e) => setStatus(e.target.value)}
                         >
                           {tasks?.map((pro) => (
-                            <option key={pro._id} value={pro.status}>{pro.status}</option>
+                            <option key={pro._id} value={pro.status}>
+                              {pro.status}
+                            </option>
                           ))}
                         </select>
                       </div>

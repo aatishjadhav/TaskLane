@@ -1,5 +1,6 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Login from "./pages/Login";
+import "./index.css";
 import Signup from "./pages/Register";
 import Home from "./pages/Home";
 import ProjectDetails from "./pages/ProjectDetails";
@@ -9,10 +10,14 @@ import TeamDetails from "./pages/TeamDetails";
 import Report from "./pages/Report";
 import UserSettings from "./pages/UserSettings";
 import { ToastContainer } from "react-toastify";
+import Navbar from "./components/Navbar";
 
 function App() {
+  const location = useLocation();
+  const hideNavbarRoutes = ['/', '/register'];
   return (
     <>
+       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
       <Routes>
         <Route path="/dashboard" element={<Home />} />
         <Route path="/" element={<Login />} />

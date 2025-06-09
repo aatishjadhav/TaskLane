@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
+import "../components/navbar.css";
 import { fetchMember } from "../slices/memberSlice";
 import { updateTeam } from "../slices/teamSlice";
 
@@ -57,7 +58,7 @@ const TeamDetails = () => {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid py-5">
     {/* Sidebar */}
     <div className="row">
       <div
@@ -95,13 +96,13 @@ const TeamDetails = () => {
       {/* Main Content */}
         <div className="col-12 col-md-9 col-lg-10 p-4">
         <button
-            className="btn btn-outline-primary d-md-none mb-3"
+            className="btn btn-outline-dark d-md-none mb-3 menu"
             type="button"
             data-bs-toggle="offcanvas"
             data-bs-target="#mobileSidebar"
             aria-controls="mobileSidebar"
           >
-            ☰ Menu
+            ☰ 
           </button>
         <Link to="/team" className="nav-link text-primary py-3">
           Back To Teams

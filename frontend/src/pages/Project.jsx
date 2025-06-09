@@ -1,24 +1,18 @@
 import { useDispatch } from "react-redux";
 import Sidebar from "../components/Sidebar";
 import { addNewProject, fetchProject } from "../slices/projectSlice";
-import { useFetch } from "../hooks/useFetch";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BASE_URL } from "../config";
 import { useSelector } from "react-redux";
+import "../components/navbar.css";
 
 const Project = () => {
   const dispatch = useDispatch();
-  // const { data: projectData, error: projectError } = useFetch(
-  //   `${BASE_URL}/projects`
-  // );
-  const { project, status } = useSelector(
-    (state) => state.project
-  );
+  const { project, status } = useSelector((state) => state.project);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+  const { searchTerm } = useSelector((state) => state.search);
   const [projectStatus, setProjectStatus] = useState("All");
 
   const handleAddProject = (e) => {
@@ -46,7 +40,7 @@ const Project = () => {
     return matchesSearch && matchesStatus;
   });
   return (
-    <div className="container-fluid">
+    <div className="container-fluid py-5">
       {/* Sidebar */}
       <div className="row">
         <div
@@ -54,7 +48,7 @@ const Project = () => {
           tabIndex="-1"
           id="mobileSidebar"
           aria-labelledby="mobileSidebarLabel"
-          style={{ width: '250px' }}
+          style={{ width: "250px" }}
         >
           <div className="offcanvas-header">
             <button
@@ -84,28 +78,15 @@ const Project = () => {
         {/* Main Content */}
         <div className="col-12 col-md-9 col-lg-10 p-4">
           <button
-            className="btn btn-outline-primary d-md-none mb-3"
+            className="btn btn-outline-dark d-md-none mb-3 menu"
             type="button"
             data-bs-toggle="offcanvas"
             data-bs-target="#mobileSidebar"
             aria-controls="mobileSidebar"
           >
-            ☰ Menu
+            ☰
           </button>
 
-          <div class="input-group mb-3">
-            <input
-              type="text"
-              class="form-control"
-              aria-label="Sizing example input"
-              aria-describedby="inputGroup-sizing-default"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <span class="input-group-text" id="inputGroup-sizing-default">
-              <i class="bi bi-search"></i>
-            </span>
-          </div>
           <div className="d-flex py-3">
             <h3>Projects</h3>
             <select
@@ -121,7 +102,7 @@ const Project = () => {
             </select>
             <button
               type="button"
-              class="btn btn-primary ms-auto"
+              class="btn btn-secondary ms-auto"
               data-bs-toggle="modal"
               data-bs-target="#exampleModal"
               data-bs-whatever="@mdo"

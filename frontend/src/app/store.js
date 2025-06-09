@@ -5,6 +5,7 @@ import taskSlice from "../slices/taskSlice";
 import teamSlice from "../slices/teamSlice";
 import memberSlice from "../slices/memberSlice";
 import authSlice from "../slices/authSlice";
+import searchSlice from "../slices/searchSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     tasks: taskSlice,
     teams: teamSlice,
     members: memberSlice,
+    search: searchSlice,
   },
 });

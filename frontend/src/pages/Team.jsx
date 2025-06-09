@@ -3,11 +3,12 @@ import Sidebar from "../components/Sidebar";
 import { useEffect, useState } from "react";
 import { addNewTeam, fetchTeams } from "../slices/teamSlice";
 import { Link } from "react-router-dom";
+import "../components/navbar.css";
 
 const Team = () => {
   const dispatch = useDispatch();
   const { teams, status } = useSelector((state) => state.teams);
-
+  const { searchTerm } = useSelector((state) => state.search);
   const MAX_VISIBLE = 3;
   const [name, setName] = useState("");
   const [members, setMembers] = useState(["", "", ""]);
@@ -30,8 +31,13 @@ const Team = () => {
     dispatch(fetchTeams());
   }, [dispatch]);
 
+  
+  const filteredTeams = teams?.filter((t) =>
+    t.name?.toLowerCase().includes(searchTerm?.toLowerCase())
+  );
+
   return (
-    <div className="container-fluid">
+    <div className="container-fluid py-5">
       {/* Sidebar */}
       <div className="row">
         <div
@@ -69,19 +75,19 @@ const Team = () => {
         {/* Main Content */}
         <div className="col-12 col-md-9 col-lg-10 p-4">
           <button
-            className="btn btn-outline-primary d-md-none mb-3"
+            className="btn btn-outline-dark d-md-none mb-3 menu"
             type="button"
             data-bs-toggle="offcanvas"
             data-bs-target="#mobileSidebar"
             aria-controls="mobileSidebar"
           >
-            ☰ Menu
+            ☰ 
           </button>
           <div className="d-flex py-3">
             <h2>Teams</h2>
             <button
               type="button"
-              class="btn btn-primary ms-auto"
+              class="btn btn-secondary ms-auto"
               data-bs-toggle="modal"
               data-bs-target="#exampleModal"
               data-bs-whatever="@mdo"
@@ -172,7 +178,7 @@ const Team = () => {
             </div>
           ) : (
             <div className="row">
-              {teams?.map((proj) => (
+              {filteredTeams?.map((proj) => (
                 <div key={proj._id} className="col-md-4 mb-3">
                   <div className="card p-3 bg-light border-0">
                     <h5 className="card-title">

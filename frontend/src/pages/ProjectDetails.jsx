@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchProject } from "../slices/projectSlice";
+import "../components/navbar.css";
 import Sidebar from "../components/Sidebar";
 import { useFetch } from "../hooks/useFetch";
 import { addNewTask, fetchTasks } from "../slices/taskSlice";
@@ -88,7 +89,7 @@ const ProjectDetails = () => {
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid py-5">
       {/* Sidebar */}
       <div className="row">
         <div
@@ -125,13 +126,13 @@ const ProjectDetails = () => {
 
         <div className="col-12 col-md-9 col-lg-10 p-4">
           <button
-            className="btn btn-outline-primary d-md-none mb-3"
+            className="btn btn-outline-dark d-md-none mb-3 menu"
             type="button"
             data-bs-toggle="offcanvas"
             data-bs-target="#mobileSidebar"
             aria-controls="mobileSidebar"
           >
-            ☰ Menu
+            ☰ 
           </button>
           <h2>{getProject?.name}</h2>
           <span>{getProject?.description}</span>

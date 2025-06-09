@@ -1,10 +1,11 @@
 import Sidebar from "../components/Sidebar";
 import ClosedTaskByTeam from "./ClosedTaskByTeam";
+import "../components/navbar.css";
 import WeeklyTaskStats from "./WeeklyTaskStats";
 
 const Report = () => {
   return (
-    <div className="container-fluid">
+    <div className="container-fluid py-5">
       {/* Sidebar */}
       <div className="row">
         <div
@@ -42,13 +43,13 @@ const Report = () => {
         {/* Main Content */}
         <div className="col-12 col-md-9 col-lg-10 p-4">
           <button
-            className="btn btn-outline-primary d-md-none mb-3"
+            className="btn btn-outline-dark d-md-none mb-3 menu"
             type="button"
             data-bs-toggle="offcanvas"
             data-bs-target="#mobileSidebar"
             aria-controls="mobileSidebar"
           >
-            ☰ Menu
+            ☰ 
           </button>
           <h1>Reports</h1>
           <div>
