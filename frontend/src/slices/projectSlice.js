@@ -7,7 +7,7 @@ export const addNewProject = createAsyncThunk(
   async (projData) => {
     const token = localStorage.getItem("token");
     const response = await axios.post(
-      `${BASE_URL}/project`,
+      `${BASE_URL}/projects`,
       projData,
       {
         headers: {

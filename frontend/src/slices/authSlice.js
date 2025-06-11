@@ -6,7 +6,7 @@ export const loginUser = createAsyncThunk(
   "login/loginUser",
   async (userData, thunkAPI) => {
     try {
-      const response = await axios.post(`${BASE_URL}/login`, userData, {
+      const response = await axios.post(`${BASE_URL}/auth/login`, userData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -30,7 +30,7 @@ export const registerUser = createAsyncThunk(
   "register/registerUser",
   async (userData, thunkAPI) => {
     try {
-      const response = await axios.post(`${BASE_URL}/signup`, userData);
+      const response = await axios.post(`${BASE_URL}/auth/signup`, userData);
       return response.data.user;
     } catch (err) {
       // Return the server error message (if available) to the component
