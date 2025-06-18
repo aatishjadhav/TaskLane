@@ -11,7 +11,14 @@ import {
   Legend,
 } from "chart.js";
 
-ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+ChartJS.register(
+  ArcElement,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend
+);
 
 const ClosedTaskByTeam = () => {
   const { tasks } = useSelector((state) => state.tasks);
@@ -19,9 +26,7 @@ const ClosedTaskByTeam = () => {
   console.log("All tasks:", tasks);
 
   // Filter tasks with status "Closed"
-  const closedTasks = tasks?.filter(
-    (task) => task?.status === "Completed"
-  );
+  const closedTasks = tasks?.filter((task) => task?.status === "Completed");
 
   console.log("Closed tasks:", closedTasks);
 
@@ -32,14 +37,13 @@ const ClosedTaskByTeam = () => {
     // Count by team name
     const teamName = task.team?.name || "Unknown Team";
     teamCount[teamName] = (teamCount[teamName] || 0) + 1;
-  
+
     // Count by owner name
     (task.owners || []).forEach((owner) => {
       const ownerName = owner.name || owner._id;
       ownerCount[ownerName] = (ownerCount[ownerName] || 0) + 1;
     });
   });
-  
 
   const pieData = {
     labels: Object.keys(teamCount),
@@ -47,7 +51,13 @@ const ClosedTaskByTeam = () => {
       {
         label: "Tasks Closed by Team",
         data: Object.values(teamCount),
-        backgroundColor: ["#36A2EB", "#FF6384", "#FFCE56", "#4BC0C0", "#9966FF"],
+        backgroundColor: [
+          "#36A2EB",
+          "#FF6384",
+          "#FFCE56",
+          "#4BC0C0",
+          "#9966FF",
+        ],
       },
     ],
   };
@@ -77,26 +87,31 @@ const ClosedTaskByTeam = () => {
   };
 
   return (
-<div style={{ padding: "2rem" }}>
-  {closedTasks.length > 0 ? (
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
-      {/* Tasks Closed by Team Chart */}
-      <div style={{ width: "48%", height: "350px" }}>
-        <h2>Tasks Closed by Team</h2>
-        <Pie data={pieData} />
-      </div>
+    <div style={{ padding: "2rem" }}>
+      {closedTasks.length > 0 ? (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Tasks Closed by Team Chart */}
+          <div style={{ flex: "1 1 300px", maxWidth: "500px" }}>
+            <h2>Tasks Closed by Team</h2>
+            <Pie data={pieData} />
+          </div>
 
-      {/* Tasks Closed by Owner Chart */}
-      <div style={{ width: "48%", height: "400px" }}>
-        <h2>Tasks Closed by Owner</h2>
-        <Bar data={barData} options={barOptions} />
-      </div>
+          {/* Tasks Closed by Owner Chart */}
+          <div style={{ flex: "1 1 300px", maxWidth: "500px" }}>
+            <h2>Tasks Closed by Owner</h2>
+            <Bar data={barData} options={barOptions} />
+          </div>
+        </div>
+      ) : (
+        <p>No closed tasks found to display charts.</p>
+      )}
     </div>
-  ) : (
-    <p>No closed tasks found to display charts.</p>
-  )}
-</div>
-
   );
 };
 

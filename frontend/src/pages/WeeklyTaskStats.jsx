@@ -11,17 +11,26 @@ import {
   ArcElement,
 } from "chart.js";
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, ArcElement);
+ChartJS.register(
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 const WeeklyTaskStats = () => {
   const { tasks } = useSelector((state) => state.tasks);
 
   const now = new Date();
-  const days = [...Array(7)].map((_, i) => {
-    const d = new Date(now);
-    d.setDate(now.getDate() - i);
-    return d.toISOString().split("T")[0]; // format YYYY-MM-DD
-  }).reverse(); // last 7 days in order
+  const days = [...Array(7)]
+    .map((_, i) => {
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      return d.toISOString().split("T")[0]; // format YYYY-MM-DD
+    })
+    .reverse(); // last 7 days in order
 
   const completedLastWeek = {};
   const pendingDurations = {};
@@ -41,7 +50,9 @@ const WeeklyTaskStats = () => {
 
     // Completed task handling
     if (status === "Completed") {
-      const completedDate = new Date(task.updatedAt).toISOString().split("T")[0];
+      const completedDate = new Date(task.updatedAt)
+        .toISOString()
+        .split("T")[0];
       if (completedLastWeek[completedDate] !== undefined) {
         completedLastWeek[completedDate]++;
         taskNamesByDay[completedDate].push(task.name); // Add task name to the list
@@ -153,8 +164,14 @@ const WeeklyTaskStats = () => {
     },
   };
 
-  const totalCompletedLastWeek = Object.values(completedLastWeek).reduce((acc, count) => acc + count, 0);
-  const totalPendingWork = Object.values(pendingDurations).reduce((acc, count) => acc + count, 0);
+  const totalCompletedLastWeek = Object.values(completedLastWeek).reduce(
+    (acc, count) => acc + count,
+    0
+  );
+  const totalPendingWork = Object.values(pendingDurations).reduce(
+    (acc, count) => acc + count,
+    0
+  );
 
   return (
     <div style={{ padding: "2rem", marginTop: "36px" }}>
@@ -177,12 +194,6 @@ const WeeklyTaskStats = () => {
           </div>
         </div>
       </div>
-
-      {/* Pending Tasks by Status */}
-      {/* <div style={{ padding: "2rem", textAlign: "center", marginTop: "30px" }}>
-        <h2>Pending Tasks by Status</h2>
-        <Pie data={pieData} options={options} />
-      </div> */}
     </div>
   );
 };
