@@ -174,20 +174,46 @@ const WeeklyTaskStats = () => {
   );
 
   return (
-    <div style={{ padding: "2rem", marginTop: "36px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+    <div
+      style={{
+        marginTop: "12rem",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          gap: "20px",
+        }}
+      >
         {/* Tasks Completed in the Last 7 Days */}
-        <div style={{ width: "48%", height: "400px" }}>
-          <h2 style={{ textAlign: "center" }}>Total Work Done Last Week</h2>
-          <Bar data={completedChartData} options={barOptions} />
+        <div
+          style={{
+            flex: "1 1 100%",
+            maxWidth: "48%",
+            height: "400px",
+            minWidth: "300px",
+          }}
+        >
+          <div>
+            <div style={{ minWidth: "600px" }}>
+              <Bar data={completedChartData} options={barOptions} />
+            </div>
+          </div>
           <div style={{ textAlign: "center", marginTop: "10px" }}>
             <h3>Total Work Done: {totalCompletedLastWeek} tasks</h3>
           </div>
         </div>
 
-        {/* Pending Tasks by Days */}
-        <div style={{ width: "48%", height: "400px" }}>
-          <h2 style={{ textAlign: "center" }}>Pending Tasks by Days</h2>
+        <div
+          style={{
+            flex: "1 1 100%",
+            maxWidth: "48%",
+            height: "400px",
+            minWidth: "300px",
+          }}
+        >
           <Bar data={pendingChartData} options={barOptions} />
           <div style={{ textAlign: "center", marginTop: "10px" }}>
             <h3>Total Pending Work: {totalPendingWork} tasks</h3>
