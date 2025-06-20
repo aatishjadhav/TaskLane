@@ -87,30 +87,52 @@ const ClosedTaskByTeam = () => {
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
-      {closedTasks.length > 0 ? (
+    <div
+      style={{
+        marginTop: "36px",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "1rem",
+        }}
+      >
+        {/* Tasks Completed in the Last 7 Days */}
         <div
           style={{
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
+            width: "100%",
+            maxWidth: "48%",
+            height: "400px",
+            minWidth: "300px",
+            flex: "1 1 300px",
           }}
         >
-          {/* Tasks Closed by Team Chart */}
-          <div style={{ flex: "1 1 300px", maxWidth: "500px" }}>
-            <h2>Tasks Closed by Team</h2>
-            <Pie data={pieData} />
-          </div>
-
-          {/* Tasks Closed by Owner Chart */}
-          <div style={{ flex: "1 1 300px", maxWidth: "500px" }}>
-            <h2>Tasks Closed by Owner</h2>
-            <Bar data={barData} options={barOptions} />
-          </div>
+          <h2 style={{ textAlign: "center" }}>Tasks Closed by Team</h2>
+          <Pie data={pieData} options={{ maintainAspectRatio: false }} />
+          <div style={{ textAlign: "center", marginTop: "10px" }}></div>
         </div>
-      ) : (
-        <p>No closed tasks found to display charts.</p>
-      )}
+
+        {/* Pending Tasks by Days */}
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "48%",
+            height: "400px",
+            minWidth: "300px",
+            flex: "1 1 300px",
+          }}
+        >
+          <h2 style={{ textAlign: "center" }}>Tasks Closed by Owner</h2>
+          <Bar
+            data={barData}
+            options={{ ...barOptions, maintainAspectRatio: false }}
+          />
+          <div style={{ textAlign: "center", marginTop: "10px" }}></div>
+        </div>
+      </div>
     </div>
   );
 };
